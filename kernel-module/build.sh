@@ -18,7 +18,7 @@ make ARCH=x86_64 -C /lib/modules/$(uname -r)/build M=$(pwd) modules
 make ARCH=x86_64 -C /lib/modules/$(uname -r)/build M=$(pwd) modules_install
 
 # Load to system
-sudo modprobe /home/worker/workspace/linux-6.8.0/fs/qnx6/qnx6.ko 
+sudo modprobe ${HOME}/linux-6.8.0/fs/qnx6/qnx6.ko 
 
 # mount disk
-sudo mount -t qnx6 -o <qnx6.img> test/
+sudo mount -t qnx6 -o loop qnx6.img test/
