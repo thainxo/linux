@@ -127,6 +127,7 @@ FILE *fopen64(const char *path, const char *mode)
 extern "C"
 int stat(const char * p, struct stat * statbuf)
 {
+    initRealIO();
     int status = -1;
     char *path = fake_path(p);
 
