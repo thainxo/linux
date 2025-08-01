@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Dashboard</title>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/chartjs/chart.js"></script>
+    <style>
+        .view { display: none; }
+        .view.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5 text-center">
+        <h1 class="mb-4">Employee Data</h1>
+        <div class="btn-group" role="group">
+            <button id="tableViewBtn" class="btn btn-primary">View Table</button>
+            <button id="graphViewBtn" class="btn btn-secondary">View Salary Graph</button>
+        </div>
+
+        <div  class="view active">
+            <!-- Table View -->
+            <div id="tableView" class="view active">
+                {% include 'table.html' %}
+            </div>
+
+            <!-- Graph View -->
+            <div id="graphView" class="view">
+                {% include 'salary_graph.html' %}
+            </div>
+        </div>
+        <script>
+            // Toggle view functionality
+            document.getElementById('tableViewBtn').addEventListener('click', () => {
+                document.getElementById('tableView').classList.add('active');
+                document.getElementById('tableViewBtn').classList.add('active');
+                document.getElementById('graphViewBtn').classList.remove('active');
+                document.getElementById('graphView').classList.remove('active');
+            });
+
+            document.getElementById('graphViewBtn').addEventListener('click', () => {
+                var cookieString = document.cookie;
+                console.log(cookieString);
+                document.getElementById('tableView').classList.remove('active');
+                document.getElementById('tableViewBtn').classList.remove('active');
+                document.getElementById('graphViewBtn').classList.add('active');
+                document.getElementById('graphView').classList.add('active');
+            });
+        </script>
+    </div>
+</body>
+</html>
