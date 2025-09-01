@@ -1,27 +1,38 @@
 # Environment
-MOUNT_POINT=/tmp/usb
-USB_DRIVE=/dev/sdX
+USB_DRIVE=${1}
+MOUNT_POINT=${2}
+
+if [ -z "$USB_DRIVE" ] || [ -z "$MOUNT_POINT" ]; then
+    echo "Usage: $0 <usb-drive> <mount-point>"
+    echo "Example: $0 /dev/sdX /mnt/usb"
+    exit 1
+fi
+
 BIOS_PARTITION_ID=1
 EFI_PARTITION_ID=2
 DATA_PARTITION_ID=3
 
 # Install grub tools
-sudo apt install -y grub2 grub-efi grub-pc dosfstools mtools
+apt install -y grub2 dosfstools mtools
+apt install -y grub-efi
+apt install -y grub-pc
+## Install gparted
+apt install -y gparted
 
 # Create partitions
-parted ${USB_DRIVE} mklabel gpt
-parted ${USB_DRIVE} mkpart primary fat32 1MiB 65MiB
-parted ${USB_DRIVE} set ${BIOS_PARTITION_ID} bios_grub on
-parted ${USB_DRIVE} mkpart primary 65MiB 129MiB
-parted ${USB_DRIVE} ${EFI_PARTITION_ID} boot on
-parted ${USB_DRIVE} mkpart primary ext4 129MiB 100%
+parted -s ${USB_DRIVE} mklabel gpt
+parted -s ${USB_DRIVE} mkpart primary fat32 1MiB 65MiB
+parted -s ${USB_DRIVE} set ${BIOS_PARTITION_ID} bios_grub on
+parted -s ${USB_DRIVE} mkpart primary 65MiB 129MiB
+parted -s ${USB_DRIVE} set ${EFI_PARTITION_ID} boot on
+parted -s ${USB_DRIVE} mkpart primary ext4 129MiB 100%
 
 # Format partitions
 # The BIOS boot partition doesn't need a filesystem
 # Format UEFI partition to fat32
 mkfs.vfat -F32 ${USB_DRIVE}${BIOS_PARTITION_ID}
 # Formtat data partition to ext4
-mkfs.ext4 ${USB_DRIVE}${DATA_PARTITION_ID}
+mkfs.ext4 -F ${USB_DRIVE}${DATA_PARTITION_ID}
 
 # Mount sdX to directory /mnt/usb
 # mount bios partition
@@ -41,19 +52,18 @@ grub-install --target=x86_64-efi \
     --recheck
 
 # Install grub BIOS
-```sh
 grub-install --target=i386-pc \
     --root-directory=${MOUNT_POINT} \
     --boot-directory=${MOUNT_POINT}/boot \
     --recheck \
     ${USB_DRIVE}
-```
+
 # Support boot Windows (wimboot)
-cp windows/wimboot ${MOUNT_POINT}/boot
+cp windows/wimboot ${MOUNT_POINT}/efi
 
 # Create grub config
-mkdir -p ${MOUNT_POINT}/boot/grub
-cat <<EOF > ${MOUNT_POINT}/boot/grub/grub.cfg
+mkdir -p ${MOUNT_POINT}/efi/grub
+cat <<EOF > ${MOUNT_POINT}/efi/grub/grub.cfg
 set timeout=5
 set default=0
 menuentry "Debian 12" {
@@ -88,10 +98,4 @@ menuentry "Windows 11" {
     boot
 }
 EOF
-```
 
-# Note
-## Fix bug out of memory when booting in efi mode with tpm is enabled
-```sh
-rmmod tpm
-``` 
