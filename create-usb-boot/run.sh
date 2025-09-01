@@ -16,8 +16,6 @@ DATA_PARTITION_ID=3
 apt install -y grub2 dosfstools mtools
 apt install -y grub-efi
 apt install -y grub-pc
-## Install gparted
-apt install -y gparted
 
 # Create partitions
 parted -s ${USB_DRIVE} mklabel gpt
@@ -30,22 +28,19 @@ parted -s ${USB_DRIVE} mkpart primary ext4 129MiB 100%
 # Format partitions
 # The BIOS boot partition doesn't need a filesystem
 # Format UEFI partition to fat32
-mkfs.vfat -F32 ${USB_DRIVE}${BIOS_PARTITION_ID}
+mkfs.vfat -F32 ${USB_DRIVE}${EFI_PARTITION_ID}
 # Formtat data partition to ext4
 mkfs.ext4 -F ${USB_DRIVE}${DATA_PARTITION_ID}
 
 # Mount sdX to directory /mnt/usb
-# mount bios partition
-mkdir -p ${MOUNT_POINT}
-mount ${USB_DRIVE}${BIOS_PARTITION_ID} ${MOUNT_POINT}
 # mount EFI partition
-mkdir -p ${MOUNT_POINT}/efi
-mount ${USB_DRIVE}${EFI_PARTITION_ID} ${MOUNT_POINT}/efi
+mkdir -p ${MOUNT_POINT}
+mount ${USB_DRIVE}${EFI_PARTITION_ID} ${MOUNT_POINT}
 
 # Install grub efi
 grub-install --target=x86_64-efi \
     --root-directory=${MOUNT_POINT} \
-    --efi-directory=${MOUNT_POINT}/efi \
+    --efi-directory=${MOUNT_POINT} \
     --boot-directory=${MOUNT_POINT}/boot \
     --removable --no-floppy --no-nvram \
     --bootloader-id=GRUB \
@@ -59,11 +54,11 @@ grub-install --target=i386-pc \
     ${USB_DRIVE}
 
 # Support boot Windows (wimboot)
-cp windows/wimboot ${MOUNT_POINT}/efi
+cp windows/wimboot ${MOUNT_POINT}
 
 # Create grub config
-mkdir -p ${MOUNT_POINT}/efi/grub
-cat <<EOF > ${MOUNT_POINT}/efi/grub/grub.cfg
+mkdir -p ${MOUNT_POINT}/grub
+cat <<EOF > ${MOUNT_POINT}/grub/grub.cfg
 set timeout=5
 set default=0
 menuentry "Debian 12" {

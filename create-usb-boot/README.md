@@ -1,6 +1,8 @@
 # Install grub tools
 ```sh
-sudo apt install -y grub2 grub-efi grub-pc dosfstools mtools
+sudo apt install -y grub2 dosfstools mtools
+sudo apt install -y grub-efi
+sudo apt install -y grub-pc
 ```
 
 # Create partitions
@@ -18,23 +20,21 @@ parted /dev/sdX mkpart primary ext4 129MiB 100%
 ```
 # Format partitions
 ```sh
-mkfs.vfat -F32 /dev/sdX1
+mkfs.vfat -F32 /dev/sdX2
 # The BIOS boot partition doesn't need a filesystem
-mkfs.ext4 /dev/sdX3
+mkfs.ext4 -F /dev/sdX3
 ```
 # Mount sdX to directory /mnt/usb
 ```sh
 mkdir -p /media/usb
-mount /dev/sdX1 /media/usb
-mkdir -p /media/usb/efi
-mount /dev/sdX2 /media/usb/efi
+mount /dev/sdX2 /media/usb
 ```
 
 # Install grub efi
 ```sh
 grub-install --target=x86_64-efi \
     --root-directory=/media/usb \
-    --efi-directory=/media/usb/efi \
+    --efi-directory=/media/usb \
     --boot-directory=/media/usb/boot \
     --removable --no-floppy --no-nvram \
     --bootloader-id=GRUB \
@@ -51,9 +51,9 @@ grub-install --target=i386-pc \
 ```
 # Support boot Windows (wimboot)
 Download wimboot from https://github.com/ipxe/wimboot.git
-cp wimboot to boot partitions
+cp wimboot to efi partitions
 ```sh
-cp wimboot /media/usb/boot
+cp wimboot /media/usb
 ```
 
 # Create grub config
