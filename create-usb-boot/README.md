@@ -12,29 +12,33 @@ BIOS Boot Partition: A small, unformatted partition (e.g., 2MB) for legacy BIOS 
 Root Partition: The main partition for the Debian system (e.g., ext4). 
 ```sh
 parted /dev/sdX mklabel gpt
-parted /dev/sdX mkpart primary fat32 1MiB 65MiB
+parted /dev/sdX mkpart primary 1MiB 3MiB
 parted /dev/sdX set 1 bios_grub on
-parted /dev/sdX mkpart primary 65MiB 129MiB
-parted /dev/sdX set 2 boot on
+parted /dev/sdX mkpart primary ext4 3MiB 65MiB
+parted /dev/sdX mkpart primary fat32 65MiB 129MiB
+parted /dev/sdX set 3 boot on
 parted /dev/sdX mkpart primary ext4 129MiB 100%
 ```
 # Format partitions
 ```sh
-mkfs.vfat -F32 /dev/sdX2
 # The BIOS boot partition doesn't need a filesystem
-mkfs.ext4 -F /dev/sdX3
+mkfs.ext4 -F /dev/sdX2
+mkfs.vfat -F32 /dev/sdX3
+mkfs.ext4 -F /dev/sdX4
 ```
 # Mount sdX to directory /mnt/usb
 ```sh
 mkdir -p /media/usb
 mount /dev/sdX2 /media/usb
+mkdir -p /media/usb/efi
+mount /dev/sdX3 /media/usb/efi
 ```
 
 # Install grub efi
 ```sh
 grub-install --target=x86_64-efi \
     --root-directory=/media/usb \
-    --efi-directory=/media/usb \
+    --efi-directory=/media/usb/efi \
     --boot-directory=/media/usb/boot \
     --removable --no-floppy --no-nvram \
     --bootloader-id=GRUB \
