@@ -24,7 +24,7 @@ parted /dev/sdX mkpart primary ext4 129MiB 100%
 # The BIOS boot partition doesn't need a filesystem
 mkfs.ext4 -F /dev/sdX2
 mkfs.vfat -F32 /dev/sdX3
-mkfs.ext4 -F /dev/sdX4
+mkfs.exfat /dev/sdX4
 ```
 # Mount sdX to directory /mnt/usb
 ```sh
@@ -54,10 +54,18 @@ grub-install --target=i386-pc \
     /dev/sdX
 ```
 # Support boot Windows (wimboot)
+## Download tools to boot windows ISO file
 Download wimboot from https://github.com/ipxe/wimboot.git
-cp wimboot to efi partitions
+copy all files in windows to data partitions
 ```sh
-cp wimboot /media/usb
+cp -r windows /media/usb
+```
+## winpeshl.ini
+launch script to pre-config environment to run install windows (https://rmprepusb.com/tutorials/145-install-windows-directly-from-an-iso-file-using-ipxe-wimboot-mbruefi-grub2grub4dos/)
+
+```conf
+[LaunchApps]
+prelaunch.bat
 ```
 
 # Create grub config

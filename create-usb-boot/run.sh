@@ -38,7 +38,7 @@ mkfs.ext4 -F ${USB_DRIVE}${DATA_PARTITION_ID}
 ## Format UEFI partition to fat32
 mkfs.vfat -F32 ${USB_DRIVE}${EFI_PARTITION_ID}
 ## Format other partition to ext4
-mkfs.ext4 -F ${USB_DRIVE}${OTHER_PARTITION_ID}
+mkfs.exfat -F ${USB_DRIVE}${OTHER_PARTITION_ID}
 
 # Mount sdX to directory /mnt/usb
 ## mount data partition
@@ -68,8 +68,8 @@ grub-install --target=i386-pc \
 cp windows/wimboot ${MOUNT_POINT}
 
 # Create grub config
-mkdir -p ${MOUNT_POINT}/grub
-cat <<EOF > ${MOUNT_POINT}/grub/grub.cfg
+mkdir -p ${MOUNT_POINT}/boot/grub
+cat <<EOF > ${MOUNT_POINT}/boot/grub/grub.cfg
 set timeout=5
 set default=0
 menuentry "Debian 12" {
@@ -96,8 +96,10 @@ menuentry "Windows 11" {
     set isofile=/os/windows/Win11_24H2_English_x64.iso
     loopback loop (hd0,gpt3)$isofile
 
-    linux16 (hd0,gpt3)/boot/wimboot
+    linux16 (hd0,gpt2)/windows/wimboot
     initrd16 \
+        newc:winpeshl.ini:(hd0,gpt2)/windows/winpeshl.ini \
+        newc:prelaunch.bat:(hd0,gpt2)/windows/prelaunch.bat \
         newc:bcd:(loop)/boot/bcd \
         newc:boot.sdi:(loop)/boot/boot.sdi \
         newc:boot.wim:(loop)/sources/boot.wim
