@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary Distribution</title>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/chartjs/chart.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Employee Salary Distribution</h1>
+        <canvas id="salaryChart" height="80"></canvas>
+    </div>
+
+    <script>
+        // Convert Python data to JS array
+        const salaries = {{ salaries | tojson }};
+        
+        // Extract employee names and salaries for chart
+        const ctx = document.getElementById('salaryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line', // bar
+            data: {
+                labels: salaries.map(s => s.name),
+                datasets: [{
+                    label: 'Salary',
+                    data: salaries.map(s => s.salary),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Employee Salaries'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
