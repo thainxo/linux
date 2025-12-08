@@ -20,8 +20,15 @@ sudo apt install xorg x11-utils
 # connect to remote by ssh
 ```sh
 ssh -Y -R6010:localhost:6000 <ssh_server>
+ssh -Y -R6000:localhost:6000 -p 50632 worker@thai2nguyen-vm-storage.vbee.lge.com
 export DISPLAY=:10
 xclock
+```
+## setup environment to force sdl use software
+```sh
+export DISPLAY=:0
+export SDL_RENDER_DRIVER=software 
+export SDL_FRAMEBUFFER_ACCELERATION=0
 ```
 # Fix issue vscode can not set maximun windows size
 edit ~/.config/Code/User/settings.json
