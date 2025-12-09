@@ -17,6 +17,8 @@
 #include "esp_log.h"
 #include "lvgl.h"
 #include "ui_lvgl.h"
+#include "vehicle_data.h"
+#include "data_simulator.h"
 
 static const char *TAG = "example";
 
@@ -37,6 +39,10 @@ static const char *TAG = "example";
 
 extern "C" void app_main(void)
 {
+    // Start the data simulator for testing
+    data_simulator_start();
+    ESP_LOGI(TAG, "Data simulator started");
+    
     UIApp *ui_app = new UIApp(EXAMPLE_LCD_H_RES, EXAMPLE_LCD_V_RES, CURRENT_COLOR_DEPTH);
     ui_app->init();
     ui_app->run();

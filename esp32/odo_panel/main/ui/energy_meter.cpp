@@ -5,8 +5,11 @@
  */
 
 #include "energy_meter.h"
+#include "vehicle_data.h"
 
-EnergyMeter::EnergyMeter(lv_obj_t *parent, int width, int height, int x_ofs, int y_ofs) : val(0), min_val(0), max_val(100), threshold1(50), threshold2(80), increasing(true) {
+EnergyMeter::EnergyMeter(lv_obj_t *parent, int width, int height, int x_ofs, int y_ofs) 
+    : val(0), min_val(0), max_val(100), threshold1(50), threshold2(80), increasing(true) 
+{
     meter = lv_meter_create(parent);
     lv_obj_align(meter, LV_ALIGN_CENTER, x_ofs, y_ofs);
     lv_obj_set_size(meter, width, height);
@@ -74,16 +77,7 @@ void EnergyMeter::setMajorTickNth(uint16_t nth) {
 }
 
 void EnergyMeter::update() {
-    if (increasing) {
-        val++;
-        if (val >= max_val) {
-            increasing = false;
-        }
-    } else {
-        val--;
-        if (val <= min_val) {
-            increasing = true;
-        }
-    }
+    auto& vehicleData = VehicleData::instance();
+    val = vehicleData.getEnergy();
     lv_meter_set_indicator_value(meter, indic, val);
 }

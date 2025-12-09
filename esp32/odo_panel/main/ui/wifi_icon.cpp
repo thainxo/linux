@@ -5,6 +5,7 @@
  */
 
 #include "wifi_icon.h"
+#include "vehicle_data.h"
 
 WifiIcon::WifiIcon(lv_obj_t *parent) : strength(0) {
     icon = lv_obj_create(parent);
@@ -68,6 +69,6 @@ void WifiIcon::draw_event_cb(lv_event_t * e) {
 
 void WifiIcon::timer_cb(lv_timer_t *timer) {
     WifiIcon *wifi = (WifiIcon *)timer->user_data;
-    int next_strength = (wifi->strength + 1) % 4;
-    wifi->setStrength(next_strength);
+    auto& vehicleData = VehicleData::instance();
+    wifi->setStrength(vehicleData.getWifiStrength());
 }

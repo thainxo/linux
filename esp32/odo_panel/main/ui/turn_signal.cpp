@@ -5,6 +5,7 @@
  */
 
 #include "turn_signal.h"
+#include "vehicle_data.h"
 
 TurnSignal::TurnSignal(lv_obj_t *parent, int width, int height) : left_active(false), right_active(false), blink_state(false) {
     // Left Arrow
@@ -74,6 +75,9 @@ void TurnSignal::timer_cb(lv_timer_t *timer) {
 }
 
 void TurnSignal::update() {
+    auto& vehicleData = VehicleData::instance();
+    left_active = vehicleData.getTurnSignalLeft();
+    right_active = vehicleData.getTurnSignalRight();
     blink_state = !blink_state;
     lv_obj_invalidate(left_arrow);
     lv_obj_invalidate(right_arrow);

@@ -5,6 +5,7 @@
  */
 
 #include "bluetooth_icon.h"
+#include "vehicle_data.h"
 
 BluetoothIcon::BluetoothIcon(lv_obj_t *parent) : connected(false) {
     icon = lv_obj_create(parent);
@@ -61,5 +62,6 @@ void BluetoothIcon::draw_event_cb(lv_event_t * e) {
 
 void BluetoothIcon::timer_cb(lv_timer_t *timer) {
     BluetoothIcon *bt = (BluetoothIcon *)timer->user_data;
-    bt->setConnected(!bt->connected);
+    auto& vehicleData = VehicleData::instance();
+    bt->setConnected(vehicleData.getBluetoothConnected());
 }

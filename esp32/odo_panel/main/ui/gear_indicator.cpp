@@ -5,6 +5,7 @@
  */
 
 #include "gear_indicator.h"
+#include "vehicle_data.h"
 #include <stdio.h>
 
 GearIndicator::GearIndicator(lv_obj_t *parent) : current_gear(1) {
@@ -58,7 +59,7 @@ void GearIndicator::update() {
 
 void GearIndicator::timer_cb(lv_timer_t *timer) {
     GearIndicator *gi = (GearIndicator *)timer->user_data;
-    gi->current_gear++;
-    if (gi->current_gear > 3) gi->current_gear = 1;
+    auto& vehicleData = VehicleData::instance();
+    gi->current_gear = vehicleData.getGear();
     gi->update();
 }

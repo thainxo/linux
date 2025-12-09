@@ -19,6 +19,7 @@
 #include "gear_indicator.h"
 #include "bluetooth_icon.h"
 #include "wifi_icon.h"
+#include "vehicle_data.h"
 
 static const char *TAG = "ui_lvgl";
 
@@ -184,13 +185,16 @@ void UIApp::run()
         int meter_size = (h_res / 2) - 10;
         int offset = h_res / 4;
 
+        auto& vehicleData = VehicleData::instance();
+        const auto& data = vehicleData.data();
+
         EnergyMeter *energy = new EnergyMeter(scr, meter_size, meter_size, -offset, 0);
-        energy->setRange(0, 50);
-        energy->setThresholds(10, 40);
+        energy->setRange(data.energy_min, data.energy_max);
+        energy->setThresholds(data.energy_max / 2, data.energy_max * 4 / 5);
 
         SpeedMeter *speed = new SpeedMeter(scr, meter_size, meter_size, offset, 0);
-        speed->setRange(0, 40);
-        speed->setThresholds(10, 30);
+        speed->setRange(data.speed_min, data.speed_max);
+        speed->setThresholds(data.speed_max / 5, data.speed_max * 4 / 5);
 
         TurnSignal *turn = new TurnSignal(scr, h_res, v_res);
         turn->setLeft(true);

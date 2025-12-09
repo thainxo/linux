@@ -5,8 +5,11 @@
  */
 
 #include "speed_meter.h"
+#include "vehicle_data.h"
 
-SpeedMeter::SpeedMeter(lv_obj_t *parent, int width, int height, int x_ofs, int y_ofs) : val(0), min_val(0), max_val(100), threshold1(20), threshold2(80), increasing(true) {
+SpeedMeter::SpeedMeter(lv_obj_t *parent, int width, int height, int x_ofs, int y_ofs) 
+    : val(0), min_val(0), max_val(100), threshold1(20), threshold2(80), increasing(true) 
+{
     meter = lv_meter_create(parent);
     lv_obj_align(meter, LV_ALIGN_CENTER, x_ofs, y_ofs);
     lv_obj_set_size(meter, width, height);
@@ -81,17 +84,7 @@ void SpeedMeter::setMajorTickNth(uint16_t nth) {
 }
 
 void SpeedMeter::update() {
-    if (increasing) {
-        val += 1;
-        if (val >= max_val) {
-            increasing = false;
-        }
-    } else {
-        val -= 1;
-        if (val <= min_val) {
-            increasing = true;
-        }
-    }
-
+    auto& vehicleData = VehicleData::instance();
+    val = vehicleData.getSpeed();
     lv_meter_set_indicator_value(meter, indic, val);
 }
