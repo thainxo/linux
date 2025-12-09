@@ -6,10 +6,10 @@
 
 #include "speed_meter.h"
 
-SpeedMeter::SpeedMeter(lv_obj_t *parent) : val(0), min_val(0), max_val(100), threshold1(20), threshold2(80), increasing(true) {
+SpeedMeter::SpeedMeter(lv_obj_t *parent, int width, int height, int x_ofs, int y_ofs) : val(0), min_val(0), max_val(100), threshold1(20), threshold2(80), increasing(true) {
     meter = lv_meter_create(parent);
-    lv_obj_align(meter, LV_ALIGN_CENTER, 110, 0);
-    lv_obj_set_size(meter, 200, 200);
+    lv_obj_align(meter, LV_ALIGN_CENTER, x_ofs, y_ofs);
+    lv_obj_set_size(meter, width, height);
 
     /*Add a scale first*/
     scale = lv_meter_add_scale(meter);

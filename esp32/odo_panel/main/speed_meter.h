@@ -10,7 +10,7 @@
 
 class SpeedMeter {
 public:
-    SpeedMeter(lv_obj_t *parent);
+    SpeedMeter(lv_obj_t *parent, int width, int height, int x_ofs, int y_ofs);
     void setRange(int32_t min, int32_t max);
     void setThresholds(int32_t val1, int32_t val2);
     void setMajorTickNth(uint16_t nth);

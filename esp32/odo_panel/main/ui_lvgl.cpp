@@ -15,6 +15,10 @@
 #include "sdkconfig.h"
 #include "energy_meter.h"
 #include "speed_meter.h"
+#include "turn_signal.h"
+#include "gear_indicator.h"
+#include "bluetooth_icon.h"
+#include "wifi_icon.h"
 
 static const char *TAG = "ui_lvgl";
 
@@ -177,13 +181,26 @@ void UIApp::run()
         // Modify OdoMeter to accept position? Or just let them overlap for now as requested "add class".
         // I'll just add it.
         
-        EnegyMeter *energy = new EnegyMeter(scr);
+        int meter_size = (h_res / 2) - 10;
+        int offset = h_res / 4;
+
+        EnergyMeter *energy = new EnergyMeter(scr, meter_size, meter_size, -offset, 0);
         energy->setRange(0, 50);
         energy->setThresholds(10, 40);
 
-        SpeedMeter *speed = new SpeedMeter(scr);
+        SpeedMeter *speed = new SpeedMeter(scr, meter_size, meter_size, offset, 0);
         speed->setRange(0, 40);
         speed->setThresholds(10, 30);
+
+        TurnSignal *turn = new TurnSignal(scr, h_res, v_res);
+        turn->setLeft(true);
+        turn->setRight(true);
+
+        GearIndicator *gear = new GearIndicator(scr);
+        
+        BluetoothIcon *bt = new BluetoothIcon(scr);
+        
+        WifiIcon *wifi = new WifiIcon(scr);
 
         // Release the mutex
         unlock();

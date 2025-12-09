@@ -32,8 +32,8 @@ static const char *TAG = "example";
 #endif
 
 // The pixel number in horizontal and vertical
-#define EXAMPLE_LCD_H_RES              800
-#define EXAMPLE_LCD_V_RES              480
+#define EXAMPLE_LCD_H_RES              320
+#define EXAMPLE_LCD_V_RES              240
 
 extern "C" void app_main(void)
 {
