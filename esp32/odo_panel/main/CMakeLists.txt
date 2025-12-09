@@ -1,3 +1,3 @@
-idf_component_register(SRCS "gear_indicator.cpp" "main.cpp" "energy_meter.cpp" "speed_meter.cpp" "turn_signal.cpp" "ui_lvgl.cpp" "bluetooth_icon.cpp" "wifi_icon.cpp"
-                       INCLUDE_DIRS "."
+idf_component_register(SRCS "main.cpp" "ui/gear_indicator.cpp" "ui/energy_meter.cpp" "ui/speed_meter.cpp" "ui/turn_signal.cpp" "ui/ui_lvgl.cpp" "ui/bluetooth_icon.cpp" "ui/wifi_icon.cpp"
+                       INCLUDE_DIRS "." "ui"
                        REQUIRES "esp_lcd")
